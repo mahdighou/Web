@@ -44,85 +44,94 @@ function getReplies($pdo, $comment_id) {
 include '../includes/header.php';
 ?>
 
-<div style="padding: 2rem 0;">
-    <div style="display: flex; gap: 30px; flex-wrap: wrap;">
+<div style="padding: 3rem 0;">
+    <div style="display: flex; gap: 40px; flex-wrap: wrap; background: #fff; padding: 2rem; border-radius: 20px; box-shadow: var(--shadow);">
         <div style="flex: 1; min-width: 300px;">
-            <img src="../assets/images/<?php echo htmlspecialchars($product['image']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" style="width: 100%; border-radius: 8px;">
+            <img src="<?php echo BASE_URL; ?>assets/images/<?php echo htmlspecialchars($product['image']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" style="width: 100%; border-radius: 15px; box-shadow: var(--shadow);">
         </div>
-        <div style="flex: 1; min-width: 300px;">
-            <h2><?php echo htmlspecialchars($product['name']); ?></h2>
-            <p style="margin: 1.5rem 0;"><?php echo nl2br(htmlspecialchars($product['description'])); ?></p>
-            <p class="price" style="font-size: 1.5rem; margin-bottom: 2rem;"><?php echo number_format($product['price']); ?> تومان</p>
+        <div style="flex: 1.2; min-width: 300px; display: flex; flex-direction: column; justify-content: center;">
+            <h2 style="font-size: 2.5rem; margin-bottom: 1rem; color: var(--secondary-color);"><?php echo htmlspecialchars($product['name']); ?></h2>
+            <div style="margin-bottom: 1.5rem;">
+                <span class="price" style="font-size: 2rem;"><?php echo number_format($product['price']); ?> تومان</span>
+            </div>
+            <p style="font-size: 1.1rem; color: #57606f; margin-bottom: 2.5rem; line-height: 1.8;"><?php echo nl2br(htmlspecialchars($product['description'])); ?></p>
 
             <?php if (isset($_SESSION['user_id'])): ?>
                 <form action="place_order.php" method="POST">
                     <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
-                    <button type="submit" class="btn btn-block" style="padding: 15px;">افزودن به سبد خرید</button>
+                    <button type="submit" class="btn btn-block" style="padding: 18px; font-size: 1.2rem;">افزودن به سبد خرید</button>
                 </form>
             <?php else: ?>
-                <p style="background: #eee; padding: 10px; border-radius: 5px;">برای ثبت سفارش باید <a href="../login.php">وارد شوید</a>.</p>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; border-right: 5px solid var(--primary-color);">
+                    برای ثبت سفارش و خرید این محصول باید ابتدا <a href="<?php echo BASE_URL; ?>login.php" style="color: var(--primary-color); font-weight: bold;">وارد حساب کاربری</a> خود شوید.
+                </div>
             <?php endif; ?>
         </div>
     </div>
 
-    <hr style="margin: 3rem 0; border: 1px solid #ddd;">
-
-    <section>
-        <h3>نظرات کاربران</h3>
+    <div style="margin-top: 4rem;">
+        <h3 class="section-title" style="text-align: right; margin-bottom: 2rem;">نظرات مشتریان</h3>
 
         <?php if (isset($_SESSION['user_id'])): ?>
-            <div class="form-container" style="max-width: 100%; margin: 2rem 0;">
-                <h4>ثبت نظر جدید</h4>
+            <div style="background: #fff; padding: 2rem; border-radius: 15px; box-shadow: var(--shadow); margin-bottom: 3rem;">
+                <h4 style="margin-bottom: 1.5rem;">ثبت نظر جدید</h4>
                 <form action="post_comment.php" method="POST">
                     <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
-                    <div class="form-group">
-                        <label>امتیاز (۱ تا ۵):</label>
-                        <select name="rate" required>
-                            <option value="5">۵ - عالی</option>
-                            <option value="4">۴ - خوب</option>
-                            <option value="3">۳ - معمولی</option>
-                            <option value="2">۲ - ضعیف</option>
-                            <option value="1">۱ - خیلی بد</option>
-                        </select>
+                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                        <div class="form-group" style="flex: 1; min-width: 150px;">
+                            <label>امتیاز شما:</label>
+                            <select name="rate" required>
+                                <option value="5">★★★★★ - عالی</option>
+                                <option value="4">★★★★☆ - خوب</option>
+                                <option value="3">★★★☆☆ - معمولی</option>
+                                <option value="2">★★☆☆☆ - ضعیف</option>
+                                <option value="1">★☆☆☆☆ - خیلی بد</option>
+                            </select>
+                        </div>
+                        <div class="form-group" style="flex: 4; min-width: 250px;">
+                            <label>متن نظر:</label>
+                            <textarea name="comment" rows="3" required placeholder="تجربه خود را از این غذا بنویسید..."></textarea>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label>متن نظر:</label>
-                        <textarea name="comment" rows="4" required></textarea>
-                    </div>
-                    <button type="submit" class="btn">ثبت نظر</button>
+                    <button type="submit" class="btn" style="min-width: 150px;">ثبت نظر</button>
                 </form>
             </div>
         <?php else: ?>
-            <p style="margin: 1rem 0;">برای ثبت نظر باید <a href="../login.php">وارد شوید</a>.</p>
+            <p style="background: #fff; padding: 20px; border-radius: 10px; margin-bottom: 2rem;">برای ثبت نظر باید <a href="<?php echo BASE_URL; ?>login.php" style="color: var(--primary-color);">وارد شوید</a>.</p>
         <?php endif; ?>
 
-        <div style="margin-top: 2rem;">
+        <div style="display: grid; gap: 20px;">
             <?php if (empty($comments)): ?>
-                <p>هنوز نظری برای این محصول ثبت نشده است.</p>
+                <p style="text-align: center; color: #777; padding: 2rem; background: #fff; border-radius: 10px;">هنوز نظری برای این محصول ثبت نشده است. اولین نفری باشید که نظر می‌دهد!</p>
             <?php else: ?>
                 <?php foreach ($comments as $comment): ?>
-                    <div style="background: #fff; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; border-right: 5px solid var(--primary-color);">
-                        <strong><?php echo htmlspecialchars($comment['user_name']); ?></strong>
-                        <span style="float: left; color: #777;"><?php echo $comment['created_at']; ?></span>
-                        <div style="color: #f39c12; margin: 5px 0;">
+                    <div style="background: #fff; padding: 1.5rem; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); border-right: 6px solid var(--primary-color);">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <strong style="font-size: 1.1rem;"><?php echo htmlspecialchars($comment['user_name']); ?></strong>
+                            <span style="color: #a4b0be; font-size: 0.8rem;"><?php echo $comment['created_at']; ?></span>
+                        </div>
+                        <div style="color: #f1c40f; margin-bottom: 1rem; font-size: 1rem;">
                             <?php echo str_repeat('★', $comment['rate']) . str_repeat('☆', 5 - $comment['rate']); ?>
                         </div>
-                        <p><?php echo nl2br(htmlspecialchars($comment['comment'])); ?></p>
+                        <p style="color: #2f3542; line-height: 1.7;"><?php echo nl2br(htmlspecialchars($comment['comment'])); ?></p>
 
                         <?php
                         $replies = getReplies($pdo, $comment['id']);
                         foreach ($replies as $reply):
                         ?>
-                            <div style="background: #f9f9f9; padding: 1rem; border-radius: 5px; margin-top: 1rem; border-right: 3px solid var(--secondary-color);">
-                                <strong>پاسخ مدیر (<?php echo htmlspecialchars($reply['user_name']); ?>):</strong>
-                                <p><?php echo nl2br(htmlspecialchars($reply['comment'])); ?></p>
+                            <div style="background: #f1f2f6; padding: 1.2rem; border-radius: 10px; margin-top: 1.5rem; border-right: 4px solid var(--secondary-color);">
+                                <div style="margin-bottom: 0.5rem; display: flex; justify-content: space-between;">
+                                    <strong>پاسخ مدیر (<?php echo htmlspecialchars($reply['user_name']); ?>):</strong>
+                                    <span style="color: #a4b0be; font-size: 0.8rem;"><?php echo $reply['created_at']; ?></span>
+                                </div>
+                                <p style="color: #57606f;"><?php echo nl2br(htmlspecialchars($reply['comment'])); ?></p>
                             </div>
                         <?php endforeach; ?>
                     </div>
                 <?php endforeach; ?>
             <?php endif; ?>
         </div>
-    </section>
+    </div>
 </div>
 
 <?php include '../includes/footer.php'; ?>
