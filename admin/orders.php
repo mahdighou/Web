@@ -8,7 +8,7 @@ if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
 
 // Fetch all completed orders
 $stmt = $pdo->query("
-    SELECT o.id, o.order_date, u.name as user_name, u.phone, u.address, p.name as product_name, p.price
+    SELECT o.id, o.order_date, o.quantity, u.name as user_name, u.phone, u.address, p.name as product_name, p.price
     FROM orders o
     JOIN users u ON o.user_id = u.id
     JOIN products p ON o.product_id = p.id
@@ -33,7 +33,8 @@ include '../includes/header.php';
                     <th style="padding: 15px;">مشتری</th>
                     <th style="padding: 15px;">تماس</th>
                     <th style="padding: 15px;">محصول</th>
-                    <th style="padding: 15px;">مبلغ</th>
+                    <th style="padding: 15px;">تعداد</th>
+                    <th style="padding: 15px;">مبلغ کل</th>
                     <th style="padding: 15px;">آدرس</th>
                 </tr>
             </thead>
@@ -48,7 +49,8 @@ include '../includes/header.php';
                         <td style="padding: 15px;"><?php echo htmlspecialchars($o['user_name']); ?></td>
                         <td style="padding: 15px;"><?php echo htmlspecialchars($o['phone']); ?></td>
                         <td style="padding: 15px;"><?php echo htmlspecialchars($o['product_name']); ?></td>
-                        <td style="padding: 15px;"><?php echo number_format($o['price']); ?></td>
+                        <td style="padding: 15px;"><?php echo $o['quantity']; ?></td>
+                        <td style="padding: 15px;"><?php echo number_format($o['price'] * $o['quantity']); ?></td>
                         <td style="padding: 15px; text-align: right;"><?php echo htmlspecialchars($o['address']); ?></td>
                     </tr>
                 <?php endforeach; ?>

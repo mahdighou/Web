@@ -30,5 +30,34 @@
             </div>
         </div>
     </footer>
+
+    <?php if (isset($_SESSION['user_id'])): ?>
+    <!-- Chat Widget -->
+    <div id="chat-btn" onclick="toggleChat()">
+        <span style="color: #fff; font-size: 24px;">💬</span>
+        <div class="badge" id="chat-badge"></div>
+    </div>
+
+    <div id="chat-window">
+        <div id="chat-header">
+            <span id="chat-title">پشتیبانی آنلاین</span>
+            <span onclick="toggleChat()" style="cursor: pointer;">✖</span>
+        </div>
+        <div id="chat-body" style="display: flex; flex-direction: column;">
+            <!-- Messages or User List will load here -->
+        </div>
+        <div id="chat-footer" style="display: none;">
+            <input type="text" id="chat-input" placeholder="پیام خود را بنویسید...">
+            <button onclick="sendMessage()" class="btn" style="padding: 5px 15px;">ارسال</button>
+        </div>
+    </div>
+
+    <script>
+        const CURRENT_USER_ID = <?php echo $_SESSION['user_id']; ?>;
+        const IS_ADMIN = <?php echo $_SESSION['role'] == 'admin' ? 'true' : 'false'; ?>;
+        const BASE_URL = '<?php echo BASE_URL; ?>';
+    </script>
+    <script src="<?php echo BASE_URL; ?>assets/js/chat.js"></script>
+    <?php endif; ?>
 </body>
 </html>

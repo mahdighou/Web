@@ -60,8 +60,22 @@ include '../includes/header.php';
                 <p style="margin: 10px 0;"><?php echo nl2br(htmlspecialchars($c['comment'])); ?></p>
 
                 <div style="margin-top: 10px;">
-                    <a href="comments.php?delete=<?php echo $c['id']; ?>" style="color: var(--danger-color);" onclick="return confirm('حذف شود؟')">حذف این نظر</a>
+                    <a href="comments.php?delete=<?php echo $c['id']; ?>" style="color: var(--danger-color);" onclick="return confirm('حذف کل نظر و پاسخ‌ها؟')">حذف کامل این نظر</a>
                 </div>
+
+                <!-- Admin Replies List -->
+                <?php
+                $replies = getReplies($pdo, $c['id']);
+                foreach ($replies as $r):
+                ?>
+                    <div style="background: #f9f9f9; padding: 10px; border-radius: 5px; margin-top: 10px; border-right: 3px solid var(--secondary-color); display: flex; justify-content: space-between;">
+                        <div>
+                            <strong>پاسخ شما:</strong>
+                            <p><?php echo htmlspecialchars($r['comment']); ?></p>
+                        </div>
+                        <a href="comments.php?delete=<?php echo $r['id']; ?>" style="color: var(--danger-color); font-size: 0.8rem;" onclick="return confirm('حذف این پاسخ؟')">حذف پاسخ</a>
+                    </div>
+                <?php endforeach; ?>
 
                 <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee;">
                     <h5>ثبت پاسخ:</h5>

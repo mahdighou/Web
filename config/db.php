@@ -41,4 +41,17 @@ if (basename(dirname($_SERVER['SCRIPT_NAME'])) == 'admin' || basename(dirname($_
 }
 
 define('BASE_URL', rtrim($baseUrl, '/') . '/');
+
+// Global Helper Functions
+function getReplies($pdo, $comment_id) {
+    $stmt = $pdo->prepare("
+        SELECT c.*, u.name as user_name
+        FROM comments c
+        JOIN users u ON c.user_id = u.id
+        WHERE c.parent_id = ?
+        ORDER BY c.created_at ASC
+    ");
+    $stmt->execute([$comment_id]);
+    return $stmt->fetchAll();
+}
 ?>

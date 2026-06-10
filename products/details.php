@@ -28,19 +28,6 @@ $stmt = $pdo->prepare("
 $stmt->execute([$id]);
 $comments = $stmt->fetchAll();
 
-// Function to fetch replies
-function getReplies($pdo, $comment_id) {
-    $stmt = $pdo->prepare("
-        SELECT c.*, u.name as user_name
-        FROM comments c
-        JOIN users u ON c.user_id = u.id
-        WHERE c.parent_id = ?
-        ORDER BY c.created_at ASC
-    ");
-    $stmt->execute([$comment_id]);
-    return $stmt->fetchAll();
-}
-
 include '../includes/header.php';
 ?>
 
@@ -52,15 +39,26 @@ include '../includes/header.php';
         <div style="flex: 1.2; min-width: 300px; display: flex; flex-direction: column; justify-content: center;">
             <h2 style="font-size: 2.5rem; margin-bottom: 1rem; color: var(--secondary-color);"><?php echo htmlspecialchars($product['name']); ?></h2>
             <div style="margin-bottom: 1.5rem;">
-                <span class="price" style="font-size: 2rem;"><?php echo number_format($product['price']); ?> تومان</span>
+                <span class="price" style="font-size: 2rem;" id="basePrice" data-price="<?php echo $product['price']; ?>"><?php echo number_format($product['price']); ?> تومان</span>
             </div>
-            <p style="font-size: 1.1rem; color: #57606f; margin-bottom: 2.5rem; line-height: 1.8;"><?php echo nl2br(htmlspecialchars($product['description'])); ?></p>
+            <p style="font-size: 1.1rem; color: #57606f; margin-bottom: 1.5rem; line-height: 1.8;"><?php echo nl2br(htmlspecialchars($product['description'])); ?></p>
+
+            <p style="margin-bottom: 1rem;">موجودی: <strong><?php echo $product['stock']; ?> عدد</strong></p>
 
             <?php if (isset($_SESSION['user_id'])): ?>
-                <form action="place_order.php" method="POST">
-                    <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
-                    <button type="submit" class="btn btn-block" style="padding: 18px; font-size: 1.2rem;">افزودن به سبد خرید</button>
-                </form>
+                <?php if ($product['stock'] > 0): ?>
+                    <form action="place_order.php" method="POST">
+                        <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
+                        <div class="form-group" style="margin-bottom: 1.5rem; display: flex; align-items: center; gap: 15px;">
+                            <label style="margin-bottom: 0;">تعداد:</label>
+                            <input type="number" name="quantity" id="orderQuantity" value="1" min="1" max="<?php echo $product['stock']; ?>" style="width: 80px;" oninput="updateTotalPrice()">
+                            <span style="font-weight: bold; color: var(--secondary-color);">جمع کل: <span id="totalPriceDisplay"><?php echo number_format($product['price']); ?></span> تومان</span>
+                        </div>
+                        <button type="submit" class="btn btn-block" style="padding: 18px; font-size: 1.2rem;">افزودن به سبد خرید</button>
+                    </form>
+                <?php else: ?>
+                    <p style="color: var(--danger-color); font-weight: bold; background: #fff5f5; padding: 15px; border-radius: 10px; border: 1px solid #ffcccc;">متأسفانه موجودی این محصول به اتمام رسیده است.</p>
+                <?php endif; ?>
             <?php else: ?>
                 <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; border-right: 5px solid var(--primary-color);">
                     برای ثبت سفارش و خرید این محصول باید ابتدا <a href="<?php echo BASE_URL; ?>login.php" style="color: var(--primary-color); font-weight: bold;">وارد حساب کاربری</a> خود شوید.
@@ -134,4 +132,12 @@ include '../includes/header.php';
     </div>
 </div>
 
+<script>
+function updateTotalPrice() {
+    const price = document.getElementById('basePrice').dataset.price;
+    const quantity = document.getElementById('orderQuantity').value;
+    const total = price * quantity;
+    document.getElementById('totalPriceDisplay').innerText = total.toLocaleString();
+}
+</script>
 <?php include '../includes/footer.php'; ?>

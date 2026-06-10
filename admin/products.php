@@ -26,15 +26,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $image = $_POST['image'];
     $id = $_POST['id'] ?? null;
 
+    $stock = (int)($_POST['stock'] ?? 0);
+
     if ($id) {
         // Edit
-        $stmt = $pdo->prepare("UPDATE products SET name = ?, price = ?, description = ?, image = ? WHERE id = ?");
-        $stmt->execute([$name, $price, $description, $image, $id]);
+        $stmt = $pdo->prepare("UPDATE products SET name = ?, price = ?, description = ?, image = ?, stock = ? WHERE id = ?");
+        $stmt->execute([$name, $price, $description, $image, $stock, $id]);
         $success = "محصول با موفقیت ویرایش شد.";
     } else {
         // Add
-        $stmt = $pdo->prepare("INSERT INTO products (name, price, description, image) VALUES (?, ?, ?, ?)");
-        $stmt->execute([$name, $price, $description, $image]);
+        $stmt = $pdo->prepare("INSERT INTO products (name, price, description, image, stock) VALUES (?, ?, ?, ?, ?)");
+        $stmt->execute([$name, $price, $description, $image, $stock]);
         $success = "محصول جدید با موفقیت اضافه شد.";
     }
 }
@@ -86,6 +88,10 @@ include '../includes/header.php';
                     <input type="text" name="image" value="<?php echo $edit_product['image'] ?? ''; ?>" required>
                     <small>نکته: تصاویر باید در پوشه assets/images موجود باشند.</small>
                 </div>
+                <div class="form-group">
+                    <label>موجودی انبار:</label>
+                    <input type="number" name="stock" value="<?php echo $edit_product['stock'] ?? '0'; ?>" required>
+                </div>
                 <button type="submit" class="btn btn-block"><?php echo $edit_product ? 'بروزرسانی محصول' : 'ثبت محصول'; ?></button>
                 <?php if ($edit_product): ?>
                     <a href="products.php" class="btn btn-block" style="background: #777; margin-top: 10px;">انصراف</a>
@@ -101,6 +107,7 @@ include '../includes/header.php';
                         <th style="padding: 10px;">ID</th>
                         <th style="padding: 10px;">نام</th>
                         <th style="padding: 10px;">قیمت</th>
+                        <th style="padding: 10px;">موجودی</th>
                         <th style="padding: 10px;">عملیات</th>
                     </tr>
                 </thead>
@@ -110,6 +117,7 @@ include '../includes/header.php';
                             <td style="padding: 10px;"><?php echo $p['id']; ?></td>
                             <td style="padding: 10px;"><?php echo htmlspecialchars($p['name']); ?></td>
                             <td style="padding: 10px;"><?php echo number_format($p['price']); ?></td>
+                            <td style="padding: 10px;"><?php echo $p['stock']; ?></td>
                             <td style="padding: 10px;">
                                 <a href="products.php?edit=<?php echo $p['id']; ?>" style="color: blue; margin-left: 10px;">ویرایش</a>
                                 <a href="products.php?delete=<?php echo $p['id']; ?>" style="color: var(--danger-color);" onclick="return confirm('آیا از حذف این محصول مطمئن هستید؟')">حذف</a>
