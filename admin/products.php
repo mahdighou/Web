@@ -23,20 +23,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = $_POST['name'];
     $price = $_POST['price'];
     $description = $_POST['description'];
-    $image = $_POST['image'];
     $id = $_POST['id'] ?? null;
-
     $stock = (int)($_POST['stock'] ?? 0);
+
+    // Handle Image Upload
+    $image_name = $_POST['current_image'] ?? '';
+    if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
+        $target_dir = "../assets/images/";
+        $file_ext = pathinfo($_FILES["image"]["name"], PATHINFO_EXTENSION);
+        $new_filename = time() . '_' . rand(100, 999) . '.' . $file_ext;
+        $target_file = $target_dir . $new_filename;
+
+        if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
+            $image_name = $new_filename;
+        }
+    }
 
     if ($id) {
         // Edit
         $stmt = $pdo->prepare("UPDATE products SET name = ?, price = ?, description = ?, image = ?, stock = ? WHERE id = ?");
-        $stmt->execute([$name, $price, $description, $image, $stock, $id]);
+        $stmt->execute([$name, $price, $description, $image_name, $stock, $id]);
         $success = "محصول با موفقیت ویرایش شد.";
     } else {
         // Add
         $stmt = $pdo->prepare("INSERT INTO products (name, price, description, image, stock) VALUES (?, ?, ?, ?, ?)");
-        $stmt->execute([$name, $price, $description, $image, $stock]);
+        $stmt->execute([$name, $price, $description, $image_name, $stock]);
         $success = "محصول جدید با موفقیت اضافه شد.";
     }
 }
@@ -67,9 +78,10 @@ include '../includes/header.php';
         <!-- Form -->
         <div style="flex: 1; min-width: 300px; background: #fff; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); align-self: flex-start;">
             <h3><?php echo $edit_product ? 'ویرایش محصول' : 'افزودن محصول جدید'; ?></h3>
-            <form action="products.php" method="POST">
+            <form action="products.php" method="POST" enctype="multipart/form-data">
                 <?php if ($edit_product): ?>
                     <input type="hidden" name="id" value="<?php echo $edit_product['id']; ?>">
+                    <input type="hidden" name="current_image" value="<?php echo $edit_product['image']; ?>">
                 <?php endif; ?>
                 <div class="form-group">
                     <label>نام محصول:</label>
@@ -84,9 +96,11 @@ include '../includes/header.php';
                     <textarea name="description" rows="4" required><?php echo $edit_product['description'] ?? ''; ?></textarea>
                 </div>
                 <div class="form-group">
-                    <label>نام فایل تصویر (مثلاً 1.jpg):</label>
-                    <input type="text" name="image" value="<?php echo $edit_product['image'] ?? ''; ?>" required>
-                    <small>نکته: تصاویر باید در پوشه assets/images موجود باشند.</small>
+                    <label>تصویر محصول:</label>
+                    <input type="file" name="image" <?php echo $edit_product ? '' : 'required'; ?>>
+                    <?php if ($edit_product && $edit_product['image']): ?>
+                        <p>تصویر فعلی: <?php echo $edit_product['image']; ?></p>
+                    <?php endif; ?>
                 </div>
                 <div class="form-group">
                     <label>موجودی انبار:</label>

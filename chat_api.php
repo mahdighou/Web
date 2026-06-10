@@ -34,7 +34,7 @@ switch ($action) {
         break;
 
     case 'fetch_messages':
-        $chat_partner_id = $_GET['user_id'] ?? null;
+        $chat_partner_id = (isset($_GET['user_id']) && $_GET['user_id'] !== 'null') ? $_GET['user_id'] : null;
 
         if ($role !== 'admin') {
             $chat_partner_id = getAdminId($pdo);
@@ -53,6 +53,8 @@ switch ($action) {
             ");
             $stmt->execute([$user_id, $chat_partner_id, $chat_partner_id, $user_id]);
             echo json_encode($stmt->fetchAll());
+        } else {
+            echo json_encode([]);
         }
         break;
 

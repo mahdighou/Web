@@ -45,9 +45,14 @@ function openChat(userId, userName = 'پشتیبانی آنلاین') {
     document.getElementById('chat-title').innerText = userName;
     document.getElementById('chat-footer').style.display = 'flex';
 
-    if (IS_ADMIN) {
+    // Clear any existing back buttons first to prevent duplicates
+    const existingBackBtn = document.getElementById('chat-back-btn');
+    if (existingBackBtn) existingBackBtn.remove();
+
+    if (IS_ADMIN && userId) {
         // Add a back button
         const backBtn = document.createElement('span');
+        backBtn.id = 'chat-back-btn';
         backBtn.innerText = ' ⬅ ';
         backBtn.style.cursor = 'pointer';
         backBtn.onclick = (e) => {
@@ -57,11 +62,13 @@ function openChat(userId, userName = 'پشتیبانی آنلاین') {
             loadUserList();
             document.getElementById('chat-title').innerText = 'لیست گفتگوها';
             document.getElementById('chat-footer').style.display = 'none';
+            backBtn.remove();
         };
         document.getElementById('chat-header').prepend(backBtn);
     }
 
     loadMessages();
+    clearInterval(chatInterval);
     chatInterval = setInterval(loadMessages, 3000);
 }
 
