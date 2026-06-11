@@ -514,24 +514,27 @@ td {
     display: none;
     position: absolute;
     top: 20px;
-    right: 20px;
+    left: 20px; /* Changed to left for RTL */
     font-size: 1.5rem;
     cursor: pointer;
 }
 
 .overlay {
-    display: none;
+    visibility: hidden;
+    opacity: 0;
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.5);
-    z-index: 1001;
+    background: rgba(0,0,0,0.7);
+    z-index: 1005;
+    transition: var(--transition);
 }
 
 .overlay.active {
-    display: block;
+    visibility: visible;
+    opacity: 1;
 }
 
 @media (max-width: 768px) {
@@ -539,21 +542,23 @@ td {
         display: block;
     }
 
-    nav {
+    nav#main-nav {
         position: fixed;
         top: 0;
-        left: -100%;
+        right: -300px; /* Changed to right for RTL push from right side */
+        left: auto;
         width: 280px;
         height: 100%;
         background: var(--white);
-        z-index: 1002;
-        transition: var(--transition);
+        z-index: 1010;
+        transition: right 0.4s cubic-bezier(0.05, 0.74, 0.2, 0.99);
         padding: 60px 20px;
-        box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+        display: block;
     }
 
-    nav.active {
-        left: 0;
+    nav#main-nav.active {
+        right: 0;
     }
 
     nav ul {

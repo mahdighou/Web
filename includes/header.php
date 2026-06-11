@@ -29,6 +29,7 @@ if (session_status() == PHP_SESSION_NONE) {
                     <li><a href="<?php echo BASE_URL; ?>">صفحه اصلی</a></li>
                     <li><a href="<?php echo BASE_URL; ?>products/all.php">تمام محصولات</a></li>
                     <?php if (isset($_SESSION['user_id'])): ?>
+                        <li><a href="<?php echo BASE_URL; ?>user/reservations.php">رزرو میز</a></li>
                         <li><a href="<?php echo BASE_URL; ?>user/cart.php">سبد خرید و سفارشات</a></li>
                         <li><a href="<?php echo BASE_URL; ?>user/profile.php">پروفایل کاربری</a></li>
                         <?php if ($_SESSION['role'] == 'admin'): ?>
