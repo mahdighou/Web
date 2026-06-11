@@ -10,8 +10,8 @@
                     <h3>دسترسی سریع</h3>
                     <ul>
                         <li><a href="<?php echo BASE_URL; ?>">صفحه اصلی</a></li>
-                        <li><a href="<?php echo BASE_URL; ?>register.php">عضویت در سایت</a></li>
-                        <li><a href="<?php echo BASE_URL; ?>cart.php">پیگیری سفارش</a></li>
+                        <li><a href="<?php echo BASE_URL; ?>auth/register.php">عضویت در سایت</a></li>
+                        <li><a href="<?php echo BASE_URL; ?>user/cart.php">پیگیری سفارش</a></li>
                     </ul>
                 </div>
                 <div class="footer-section">

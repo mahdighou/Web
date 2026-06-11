@@ -1,8 +1,8 @@
 <?php
-require_once 'config/db.php';
+require_once '../config/db.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
+    header('Location: ' . BASE_URL . 'auth/login.php');
     exit;
 }
 
@@ -24,7 +24,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['checkout'])) {
     $phone = $_POST['phone'];
     $address = $_POST['address'];
 
-    // 1. Fetch pending orders to check stock one last time
     $stmt = $pdo->prepare("
         SELECT o.id, o.product_id, o.quantity, p.name, p.stock
         FROM orders o
@@ -44,14 +43,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['checkout'])) {
     }
 
     if ($can_checkout) {
-        // Start Transaction
         $pdo->beginTransaction();
         try {
-            // Update user info
             $stmt = $pdo->prepare("UPDATE users SET phone = ?, address = ? WHERE id = ?");
             $stmt->execute([$phone, $address, $user_id]);
 
-            // Deduct stock and mark as completed
             foreach ($pending_orders as $po) {
                 $stmt = $pdo->prepare("UPDATE products SET stock = stock - ? WHERE id = ?");
                 $stmt->execute([$po['quantity'], $po['product_id']]);
@@ -69,7 +65,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['checkout'])) {
     }
 }
 
-// Fetch pending orders
 $stmt = $pdo->prepare("
     SELECT o.id, o.quantity, p.name, p.price, p.image
     FROM orders o
@@ -84,7 +79,6 @@ foreach ($cart_items as $item) {
     $total_price += ($item['price'] * $item['quantity']);
 }
 
-// Fetch completed orders (My Orders)
 $stmt = $pdo->prepare("
     SELECT o.id, o.order_date, o.quantity, p.name as product_name, p.price, p.image
     FROM orders o
@@ -95,12 +89,11 @@ $stmt = $pdo->prepare("
 $stmt->execute([$user_id]);
 $completed_orders = $stmt->fetchAll();
 
-// Fetch user info for checkout form
 $stmt = $pdo->prepare("SELECT phone, address FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch();
 
-include 'includes/header.php';
+include '../includes/header.php';
 ?>
 
 <div style="padding: 3rem 0;">
@@ -121,7 +114,7 @@ include 'includes/header.php';
     <?php if (empty($cart_items) && !$message && !$error): ?>
         <div style="text-align: center; background: #fff; padding: 3rem; border-radius: 15px; box-shadow: var(--shadow);">
             <p style="font-size: 1.2rem; margin-bottom: 2rem;">سبد خرید شما در حال حاضر خالی است.</p>
-            <a href="index.php" class="btn">مشاهده منوی غذاها</a>
+            <a href="<?php echo BASE_URL; ?>index.php" class="btn">مشاهده منوی غذاها</a>
         </div>
     <?php elseif (!empty($cart_items)): ?>
         <div style="display: flex; gap: 30px; flex-wrap: wrap;">
@@ -179,7 +172,6 @@ include 'includes/header.php';
         </div>
     <?php endif; ?>
 
-    <!-- History Section -->
     <?php if (!empty($completed_orders)): ?>
         <h2 class="section-title" style="margin-top: 5rem;">تاریخچه سفارشات نهایی شده</h2>
         <div class="table-container">
@@ -211,4 +203,4 @@ include 'includes/header.php';
     <?php endif; ?>
 </div>
 
-<?php include 'includes/footer.php'; ?>
+<?php include '../includes/footer.php'; ?>

@@ -1,12 +1,14 @@
 <?php
 require_once 'config/db.php';
 
-// Fetch products with average rating
+// Fetch top 6 products with average rating, sorted by rating
 $query = "
     SELECT p.*, AVG(c.rate) as avg_rating
     FROM products p
     LEFT JOIN comments c ON p.id = c.product_id AND c.parent_id IS NULL
     GROUP BY p.id
+    ORDER BY avg_rating DESC
+    LIMIT 6
 ";
 $stmt = $pdo->query($query);
 $products = $stmt->fetchAll();
@@ -19,7 +21,7 @@ include 'includes/header.php';
     <p>بهترین غذاها را با ما در سریع‌ترین زمان تجربه کنید</p>
 </section>
 
-<h2 class="section-title">منوی غذاهای محبوب</h2>
+<h2 class="section-title">غذاهای برتر و محبوب</h2>
 
 <div class="product-grid">
     <?php foreach ($products as $product): ?>
@@ -41,6 +43,10 @@ include 'includes/header.php';
             </div>
         </div>
     <?php endforeach; ?>
+</div>
+
+<div style="text-align: center; margin: 3rem 0;">
+    <a href="<?php echo BASE_URL; ?>products/all.php" class="btn" style="padding: 15px 40px; font-size: 1.2rem;">مشاهده تمام محصولات</a>
 </div>
 
 <?php include 'includes/footer.php'; ?>

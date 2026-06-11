@@ -16,8 +16,6 @@ $options = [
 try {
      $pdo = new PDO($dsn, $user, $pass, $options);
 } catch (\PDOException $e) {
-     // In a real project, you might want to log this instead of showing it
-     // throw new \PDOException($e->getMessage(), (int)$e->getCode());
      die("خطا در اتصال به پایگاه داده: " . $e->getMessage());
 }
 
@@ -26,21 +24,24 @@ if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
 
-// Define base path for easier includes if needed
-define('BASE_PATH', dirname(__DIR__) . '/');
-
 // Dynamically determine the base URL
 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
 $domainName = $_SERVER['HTTP_HOST'];
-$scriptName = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
-$baseUrl = $protocol . $domainName . ($scriptName == '/' ? '' : $scriptName);
-
-// If we are in a subdirectory like 'admin' or 'products', we need to go up
-if (basename(dirname($_SERVER['SCRIPT_NAME'])) == 'admin' || basename(dirname($_SERVER['SCRIPT_NAME'])) == 'products') {
-    $baseUrl = str_replace(array('/admin', '/products'), '', $baseUrl);
+// Calculate script name and base path accurately
+$fullPath = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME']));
+// If we are in a subdirectory, find the root
+$parts = explode('/', trim($fullPath, '/'));
+$subfolders = ['auth', 'user', 'products', 'admin'];
+$cleanParts = [];
+foreach($parts as $part) {
+    if (in_array($part, $subfolders)) break;
+    if ($part !== '') $cleanParts[] = $part;
 }
+$basePath = '/' . implode('/', $cleanParts);
+$basePath = rtrim($basePath, '/') . '/';
 
-define('BASE_URL', rtrim($baseUrl, '/') . '/');
+$baseUrl = $protocol . $domainName . $basePath;
+define('BASE_URL', $baseUrl);
 
 // Global Helper Functions
 function getReplies($pdo, $comment_id) {

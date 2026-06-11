@@ -32,6 +32,12 @@ include '../includes/header.php';
 ?>
 
 <div style="padding: 3rem 0;">
+    <?php if (isset($_GET['error']) && $_GET['error'] == 'stock'): ?>
+        <p style="background: #f8d7da; color: #721c24; padding: 15px; border-radius: 10px; margin-bottom: 20px; border-right: 5px solid var(--danger-color);">
+            تعداد درخواستی بیشتر از موجودی انبار است. حداکثر تعداد قابل افزودن: <?php echo htmlspecialchars($_GET['max'] ?? '0'); ?>
+        </p>
+    <?php endif; ?>
+
     <div style="display: flex; gap: 40px; flex-wrap: wrap; background: #fff; padding: 2rem; border-radius: 20px; box-shadow: var(--shadow);">
         <div style="flex: 1; min-width: 300px;">
             <img src="<?php echo BASE_URL; ?>assets/images/<?php echo htmlspecialchars($product['image']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" style="width: 100%; border-radius: 15px; box-shadow: var(--shadow);">
@@ -61,7 +67,7 @@ include '../includes/header.php';
                 <?php endif; ?>
             <?php else: ?>
                 <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; border-right: 5px solid var(--primary-color);">
-                    برای ثبت سفارش و خرید این محصول باید ابتدا <a href="<?php echo BASE_URL; ?>login.php" style="color: var(--primary-color); font-weight: bold;">وارد حساب کاربری</a> خود شوید.
+                    برای ثبت سفارش و خرید این محصول باید ابتدا <a href="<?php echo BASE_URL; ?>auth/login.php" style="color: var(--primary-color); font-weight: bold;">وارد حساب کاربری</a> خود شوید.
                 </div>
             <?php endif; ?>
         </div>
@@ -95,7 +101,7 @@ include '../includes/header.php';
                 </form>
             </div>
         <?php else: ?>
-            <p style="background: #fff; padding: 20px; border-radius: 10px; margin-bottom: 2rem;">برای ثبت نظر باید <a href="<?php echo BASE_URL; ?>login.php" style="color: var(--primary-color);">وارد شوید</a>.</p>
+            <p style="background: #fff; padding: 20px; border-radius: 10px; margin-bottom: 2rem;">برای ثبت نظر باید <a href="<?php echo BASE_URL; ?>auth/login.php" style="color: var(--primary-color);">وارد شوید</a>.</p>
         <?php endif; ?>
 
         <div style="display: grid; gap: 20px;">

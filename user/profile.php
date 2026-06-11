@@ -1,15 +1,14 @@
 <?php
-require_once 'config/db.php';
+require_once '../config/db.php';
 
 if (!isset($_SESSION['user_id'])) {
-    header('Location: login.php');
+    header('Location: ' . BASE_URL . 'auth/login.php');
     exit;
 }
 
 $user_id = $_SESSION['user_id'];
 $success = '';
 
-// Handle Update
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = $_POST['name'];
     $phone = $_POST['phone'];
@@ -22,12 +21,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-// Fetch current info
 $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
 $stmt->execute([$user_id]);
 $user = $stmt->fetch();
 
-include 'includes/header.php';
+include '../includes/header.php';
 ?>
 
 <div class="form-container">
@@ -57,4 +55,4 @@ include 'includes/header.php';
     </form>
 </div>
 
-<?php include 'includes/footer.php'; ?>
+<?php include '../includes/footer.php'; ?>
