@@ -44,10 +44,11 @@ include '../includes/header.php';
     </div>
 
     <div style="margin-top: 3rem; display: flex; gap: 20px; flex-wrap: wrap;">
-        <a href="products.php" class="btn" style="flex: 1; text-align: center; background: var(--secondary-color);">مدیریت محصولات</a>
-        <a href="comments.php" class="btn" style="flex: 1; text-align: center; background: var(--secondary-color);">مدیریت نظرات</a>
-        <a href="orders.php" class="btn" style="flex: 1; text-align: center; background: var(--secondary-color);">گزارش سفارشات</a>
-        <a href="reservations.php" class="btn" style="flex: 1; text-align: center; background: var(--secondary-color);">مدیریت رزرو میز</a>
+        <a href="products.php" class="btn" style="flex: 1; text-align: center; background: var(--secondary-color); min-width: 150px;">مدیریت محصولات</a>
+        <a href="comments.php" class="btn" style="flex: 1; text-align: center; background: var(--secondary-color); min-width: 150px;">مدیریت نظرات</a>
+        <a href="orders.php" class="btn" style="flex: 1; text-align: center; background: var(--secondary-color); min-width: 150px;">گزارش سفارشات</a>
+        <a href="reservations.php" class="btn" style="flex: 1; text-align: center; background: var(--secondary-color); min-width: 150px;">مدیریت رزرو میز</a>
+        <a href="users.php" class="btn" style="flex: 1; text-align: center; background: var(--secondary-color); min-width: 150px;">مدیریت کاربران</a>
     </div>
 </div>
 
